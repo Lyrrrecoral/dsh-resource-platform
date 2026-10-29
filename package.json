@@ -1,0 +1,15 @@
+{
+  "name": "dsh-resource-platform",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Host resource guard, managed long-task allocation and resource monitor for DeepSeek Harness.",
+  "license": "MIT",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "test:ui": "node packages/resource-allocation-ui/smoke/bundle-smoke.mjs",
+    "check": "node scripts/check-release.mjs",
+    "audit:privacy": "node scripts/privacy-audit.mjs"
+  }
+}

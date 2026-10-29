@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Resource Allocation",
+    "description": "Session-owned long-task runs, optional labels, orphan observation and a read-only scheduler queue."
+  }
+}

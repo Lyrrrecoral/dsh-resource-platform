@@ -1,0 +1,63 @@
+{
+  "name": "hardware-guard",
+  "description": "Hardware detection, resource guardrails, bounded data lifecycle and incident-driven adaptation for DeepSeek Harness; protects WSL2/VM hosts from runaway compute while keeping sessions hardware-aware.",
+  "version": "1.0.1",
+  "license": "MIT",
+  "type": "module",
+  "packageManager": "pnpm@11.7.0",
+  "engines": {
+    "node": ">=20.0.0",
+    "dsh": ">=0.2.0-rc.2 <0.3.0"
+  },
+  "main": "lib/index.js",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./shell": {
+      "types": "./lib/shell.d.ts",
+      "default": "./lib/shell.js"
+    },
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json",
+    "./api": "./lib/ops.js",
+    "./ops": "./lib/ops.js",
+    "./sandbox": "./lib/sandbox.js",
+    "./schemas/host-profile.schema.json": "./schemas/host-profile.schema.json",
+    "./locale/*.json": "./locale/*.json"
+  },
+  "files": [
+    "lib/*.js",
+    "lib/*.d.ts",
+    "schemas/*.json",
+    "cordis.patch.yml",
+    "README.md",
+    "README.zh.md",
+    "LICENSE",
+    "locale/*.json"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "~4.0.4",
+    "@deepseek-ai/dsh-bash-sandbox": "^0.2.0-rc.2",
+    "@deepseek-ai/dsh-home-paths": "^0.2.0-rc.2",
+    "@deepseek-ai/dsh-sandbox-local": "^0.2.0-rc.2",
+    "@deepseek-ai/dsh-tools": "^0.2.0-rc.2",
+    "@deepseek-ai/schemastery": "^3.18.4"
+  },
+  "keywords": [
+    "dsh-plugin",
+    "deepseek-harness",
+    "resource-guard",
+    "hardware",
+    "sandbox",
+    "systemd",
+    "monitoring"
+  ]
+}

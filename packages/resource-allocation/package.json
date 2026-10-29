@@ -1,0 +1,91 @@
+{
+  "name": "resource-allocation",
+  "description": "Resource allocation for DeepSeek Harness: session-owned long-task runs, optional labels, orphan observation and a read-only scheduler queue.",
+  "version": "1.0.4",
+  "license": "MIT",
+  "type": "module",
+  "packageManager": "pnpm@11.7.0",
+  "engines": {
+    "node": ">=20.0.0",
+    "dsh": ">=0.2.0-rc.2 <0.3.0"
+  },
+  "main": "lib/index.js",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./api": {
+      "types": "./lib/ops.d.ts",
+      "default": "./lib/ops.js"
+    },
+    "./ops": {
+      "types": "./lib/ops.d.ts",
+      "default": "./lib/ops.js"
+    },
+    "./runs": {
+      "types": "./lib/runs.d.ts",
+      "default": "./lib/runs.js"
+    },
+    "./storage": {
+      "types": "./lib/storage.d.ts",
+      "default": "./lib/storage.js"
+    },
+    "./sessions": {
+      "types": "./lib/sessions.d.ts",
+      "default": "./lib/sessions.js"
+    },
+    "./bounds": {
+      "types": "./lib/bounds.d.ts",
+      "default": "./lib/bounds.js"
+    },
+    "./scheduler": {
+      "types": "./lib/scheduler/index.d.ts",
+      "default": "./lib/scheduler/index.js"
+    },
+    "./scheduler/*": {
+      "types": "./lib/scheduler/*.d.ts",
+      "default": "./lib/scheduler/*.js"
+    },
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json",
+    "./schemas/project-manifest.schema.json": "./schemas/project-manifest.schema.json",
+    "./schemas/queue.schema.json": "./schemas/queue.schema.json",
+    "./schemas/policy.schema.json": "./schemas/policy.schema.json",
+    "./process-usage": {
+      "types": "./lib/process-usage.d.ts",
+      "default": "./lib/process-usage.js"
+    },
+    "./locale/*.json": "./locale/*.json"
+  },
+  "files": [
+    "lib",
+    "schemas",
+    "cordis.patch.yml",
+    "README.md",
+    "LICENSE",
+    "locale/*.json",
+    "README.zh.md"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "~4.0.4",
+    "@deepseek-ai/dsh-home-paths": "^0.2.0-rc.2",
+    "@deepseek-ai/dsh-tools": "^0.2.0-rc.2",
+    "@deepseek-ai/schemastery": "^3.18.4"
+  },
+  "keywords": [
+    "dsh-plugin",
+    "deepseek-harness",
+    "resource-allocation",
+    "long-task",
+    "systemd",
+    "queue",
+    "session-monitor"
+  ]
+}

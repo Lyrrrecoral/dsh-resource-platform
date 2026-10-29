@@ -1,0 +1,144 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://resource-allocation.local/schemas/queue.schema.json",
+  "title": "ResourceAllocationQueue",
+  "description": "scheduler 的运行态事实源。revision 单调递增，所有写操作 CAS。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "revision",
+    "updatedAt",
+    "queued",
+    "running",
+    "capacity",
+    "lastDecision"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "revision": { "type": "integer", "minimum": 1 },
+    "updatedAt": { "type": "integer", "minimum": 0 },
+    "queued": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/queue-item" }
+    },
+    "running": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/running-item" }
+    },
+    "capacity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pressure", "headroomCpuCores", "headroomMemBytes", "sampledAt"],
+      "properties": {
+        "pressure": { "enum": ["ok", "warn", "critical"] },
+        "headroomCpuCores": { "type": "number", "minimum": 0 },
+        "headroomMemBytes": { "type": "integer", "minimum": 0 },
+        "sampledAt": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "lastDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["revision", "action", "reason", "by", "at"],
+      "properties": {
+        "revision": { "type": "integer", "minimum": 1 },
+        "action": {
+          "enum": [
+            "admit",
+            "deny",
+            "throttle",
+            "pause",
+            "resume",
+            "kill",
+            "reject",
+            "noop"
+          ]
+        },
+        "reason": { "type": "string" },
+        "by": { "type": "string" },
+        "at": { "type": "integer", "minimum": 0 }
+      }
+    }
+  },
+  "definitions": {
+    "queue-item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "projectId",
+        "taskId",
+        "owner",
+        "priority",
+        "status",
+        "request",
+        "submittedAt",
+        "lastTransitionAt"
+      ],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "projectId": { "type": "string", "minLength": 1 },
+        "taskId": { "type": "string", "minLength": 1 },
+        "owner": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "sessionId": { "type": "string" },
+            "agentId": { "type": "string" },
+            "goalId": { "type": "string" },
+            "jobId": { "type": "string" },
+            "runId": { "type": "string" }
+          }
+        },
+        "priority": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "status": {
+          "enum": [
+            "queued",
+            "admitted",
+            "running",
+            "throttled",
+            "paused",
+            "completed",
+            "failed",
+            "killed"
+          ]
+        },
+        "request": { "$ref": "#/definitions/resource-request" },
+        "deadlineAt": { "type": ["integer", "null"], "minimum": 0 },
+        "reason": { "type": "string" },
+        "submittedAt": { "type": "integer", "minimum": 0 },
+        "lastTransitionAt": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "running-item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["item", "allocation"],
+      "properties": {
+        "item": { "$ref": "#/definitions/queue-item" },
+        "allocation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["cpuCores", "memBytes", "managerUnit"],
+          "properties": {
+            "cpuCores": { "type": "number", "minimum": 0 },
+            "memBytes": { "type": "integer", "minimum": 0 },
+            "managerUnit": { "type": "string" },
+            "pid": { "type": ["integer", "null"], "minimum": 0 },
+            "cgroupPath": { "type": "string" }
+          }
+        }
+      }
+    },
+    "resource-request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cpuCores", "memBytes"],
+      "properties": {
+        "cpuCores": { "type": "number", "exclusiveMinimum": 0 },
+        "memBytes": { "type": "integer", "minimum": 1 }
+      }
+    }
+  }
+}

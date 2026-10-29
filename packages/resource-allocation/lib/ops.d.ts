@@ -1,0 +1,11 @@
+export declare const name: "resource-allocation-api";
+export declare const inject: readonly ["webServer"];
+export declare const ROUTE_PROJECTS: "/resources/projects";
+export declare const ROUTE_PROJECTS_JSON: "/resources/projects.json";
+export declare const LEGACY_ROUTE_PROJECTS: "/ops/projects";
+export declare const LEGACY_ROUTE_PROJECTS_JSON: "/ops/projects.json";
+export declare function defaultQueuePath(): string;
+export declare function isSameOriginRequest(req: unknown, url: URL): boolean;
+export declare function authorizeResourceWrite(req: unknown, url: URL): { ok: true } | { ok: false; status: number; error: string };
+export declare function createHandler(options: Record<string, unknown>): (req: unknown, res: unknown) => Promise<void>;
+export declare function apply(ctx: unknown, config?: Record<string, unknown>): void;

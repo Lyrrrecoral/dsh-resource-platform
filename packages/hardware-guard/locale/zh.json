@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "硬件守卫",
+    "description": "为 DeepSeek Harness 提供主机硬件探测、资源守卫、压力事件与沙箱执行限制。"
+  }
+}

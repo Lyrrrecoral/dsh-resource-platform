@@ -1,0 +1,154 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://hardware-guard.local/schemas/host-profile.schema.json",
+  "title": "HostProfile",
+  "description": "机器私有的硬件事实与预算。禁止跨机器同步。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "probedAt",
+    "host",
+    "hardware",
+    "budget",
+    "pressure",
+    "enforcement"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "probedAt": { "type": "integer", "minimum": 0 },
+    "host": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["platform", "arch", "isWsl", "hostname", "kernel"],
+      "properties": {
+        "platform": { "enum": ["linux", "darwin", "win32"] },
+        "arch": { "type": "string", "minLength": 1 },
+        "isWsl": { "type": "boolean" },
+        "hostname": { "type": "string" },
+        "kernel": { "type": "string" },
+        "nodeVersion": { "type": "string" }
+      }
+    },
+    "hardware": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cpuCount", "cpuModel", "memTotalBytes", "cgroup"],
+      "properties": {
+        "cpuCount": { "type": "integer", "minimum": 1 },
+        "cpuModel": { "type": "string" },
+        "memTotalBytes": { "type": "integer", "minimum": 0 },
+        "swapTotalBytes": { "type": "integer", "minimum": 0 },
+        "cgroup": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["version"],
+          "properties": {
+            "version": { "enum": ["none", "v1", "v2"] },
+            "cpuLimitCores": { "type": ["number", "null"] },
+            "memMaxBytes": { "type": ["integer", "null"] },
+            "pidsMax": { "type": ["integer", "null"] }
+          }
+        }
+      }
+    },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cpuBudgetCores",
+        "cpuReservedCores",
+        "memBudgetBytes",
+        "perCommandMemCapBytes",
+        "perCommandMaxProcesses",
+        "maxBackgroundJobs",
+        "niceLevel",
+        "derivedFrom",
+        "confirmationRequired"
+      ],
+      "properties": {
+        "cpuBudgetCores": { "type": "number", "exclusiveMinimum": 0 },
+        "cpuReservedCores": { "type": "number", "minimum": 0 },
+        "memBudgetBytes": { "type": "integer", "minimum": 1 },
+        "perCommandMemCapBytes": { "type": "integer", "minimum": 1 },
+        "memoryRunawayBytes": { "type": "integer", "minimum": 1 },
+        "perCommandMaxProcesses": { "type": "integer", "minimum": 1 },
+        "maxBackgroundJobs": { "type": "integer", "minimum": 1 },
+        "niceLevel": { "type": "integer", "minimum": -20, "maximum": 19 },
+        "derivedFrom": { "enum": ["auto", "user-confirmed", "override"] },
+        "confirmationRequired": { "type": "boolean" }
+      }
+    },
+    "pressure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "warnLoad",
+        "critLoad",
+        "warnMemFrac",
+        "critMemFrac",
+        "hysteresis"
+      ],
+      "properties": {
+        "warnLoad": { "type": "number", "minimum": 0 },
+        "critLoad": { "type": "number", "minimum": 0 },
+        "warnMemFrac": { "type": "number", "minimum": 0, "maximum": 1 },
+        "critMemFrac": { "type": "number", "minimum": 0, "maximum": 1 },
+        "hysteresis": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["warnExitLoad", "critExitLoad", "minStateMs"],
+          "properties": {
+            "warnExitLoad": { "type": "number", "minimum": 0 },
+            "critExitLoad": { "type": "number", "minimum": 0 },
+            "warnExitMemFrac": { "type": "number", "minimum": 0, "maximum": 1 },
+            "critExitMemFrac": { "type": "number", "minimum": 0, "maximum": 1 },
+            "minStateMs": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "samplingIntervalMs": { "type": "integer", "minimum": 1000 },
+        "contextRefreshMs": { "type": "integer", "minimum": 1000 }
+      }
+    },
+    "enforcement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["autoKillOnCritical"],
+      "properties": {
+        "autoKillOnCritical": { "type": "boolean" },
+        "killCooldownMs": { "type": "integer", "minimum": 0 },
+        "killGraceMs": { "type": "integer", "minimum": 0 },
+        "prlimitTimeoutMs": { "type": "integer", "minimum": 1 },
+        "excludeComm": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        },
+        "allowOnCritical": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        }
+      }
+    },
+    "disk": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "paths", "warnAvailBytes", "critAvailBytes", "warnUsePct", "critUsePct", "sampleTtlMs"],
+      "description": "v0.4.0 磁盘压力轴配置（阈值 + 显式路径列表；自动解析路径 $DSH_HOME/cwd/WSL /mnt/c 为 live 状态，见 shared.diskPaths）。",
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "paths": { "type": "array", "items": { "type": "string" } },
+        "warnAvailBytes": { "type": "integer", "minimum": 1 },
+        "critAvailBytes": { "type": "integer", "minimum": 1 },
+        "warnUsePct": { "type": "number", "minimum": 0, "maximum": 1 },
+        "critUsePct": { "type": "number", "minimum": 0, "maximum": 1 },
+        "sampleTtlMs": { "type": "integer", "minimum": 1000 }
+      }
+    },
+    "overrides": {
+      "type": "object",
+      "description": "用户对自动推导值的显式覆盖，键为 budget/pressure 字段名。"
+    }
+  }
+}

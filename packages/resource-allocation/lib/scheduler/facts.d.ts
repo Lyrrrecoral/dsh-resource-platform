@@ -1,0 +1,11 @@
+export declare function parseMeminfo(text: string): Record<string, number>;
+export declare function parseLoadavg(text: string): { load1: number; load5: number; load15: number };
+export declare function sampleVitals(): Record<string, unknown>;
+export declare function readHostProfile(dir: string): Record<string, unknown>;
+export declare function classifyByThresholds(vitals: Record<string, unknown>, profile: Record<string, unknown>): Record<string, unknown>;
+export declare function readPressureState(dir: string, options?: Record<string, unknown>): Record<string, unknown>;
+export declare function readProjects(dir: string, options?: Record<string, unknown>): Record<string, unknown>;
+export declare function readRuns(dir: string, options?: Record<string, unknown>): Record<string, unknown>;
+export declare function indexProjects(entries: Array<Record<string, unknown>>): Map<string, Record<string, unknown>>;
+export declare function indexRuns(runs: Array<Record<string, unknown>>): Map<string, Record<string, unknown>>;
+export declare function collectFacts(options?: Record<string, unknown>): Record<string, unknown>;

@@ -1,0 +1,19 @@
+# resource-allocation bundle patch.
+#
+# Mounts the host plugin (model tools + run/queue facts) and the compatibility
+# HTTP projection used by the Resources UI. Project/task IDs are optional
+# labels; no project registration is required for resource_run.
+- insert:
+    - id: resource-allocation
+      name: 'resource-allocation'
+      config:
+        enabled: true
+        reconcileIntervalMs: 5000
+        planIntervalMs: 0
+        runsRetentionDays: 14
+
+    - id: resource-allocation-api
+      name: 'resource-allocation/api'
+      config:
+        refreshSeconds: 15
+        runsRetentionDays: 14

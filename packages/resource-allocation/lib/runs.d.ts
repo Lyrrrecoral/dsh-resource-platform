@@ -1,0 +1,41 @@
+export declare const RUNS_SCHEMA_VERSION: number;
+export declare const RUNS_FILE_NAME: string;
+export declare const RUN_STATUSES: readonly string[];
+export declare const RUN_TERMINAL_STATUSES: readonly string[];
+export declare const RUN_ACTIVE_STATUSES: readonly string[];
+export declare const RUN_TRANSITIONS: Readonly<Record<string, string[]>>;
+export declare const OWNER_KINDS: readonly string[];
+export declare const DEFAULT_LIMITS: Readonly<{ cpuMaxCores: number; memoryMaxBytes: number; tasksMax: number }>;
+export declare const DEFAULT_NICE_LEVEL: number;
+export declare const DEFAULT_RUNS_RETENTION_DAYS: number;
+export declare const DAY_MS: number;
+export declare const RUN_UNIT_PREFIX: string;
+export declare const LEGACY_RUN_UNIT_PREFIX: string;
+export declare function makeRunId(now?: number): string;
+export declare function runUnitName(projectId: string, runId: string): string;
+export declare function isValidRunUnitName(unit: string): boolean;
+export declare function validateRun(run: unknown, errors: string[], where?: string): void;
+export declare function emptyRunsDoc(now?: number): Record<string, unknown>;
+export declare function validateRunsDoc(doc: unknown): { ok: boolean; errors: string[] };
+export declare function isAllowedTransition(from: string, to: string): boolean;
+export declare class RunRegistry {
+	constructor(options?: { dir: string; now?: () => number });
+	readonly dir: string;
+	readonly path: string;
+	load(): { doc: Record<string, unknown> | null; path: string; error?: string };
+	list(): Array<Record<string, unknown>>;
+	get(runId: string): Record<string, unknown> | null;
+	create(runInput: Record<string, unknown>, options?: { expectedRevision?: number }): Record<string, unknown>;
+	update(runId: string, patch: Record<string, unknown>, options?: { expectedRevision?: number }): Record<string, unknown>;
+	mutate(mutator: (doc: Record<string, unknown>) => unknown, options?: { attempts?: number }): Record<string, unknown>;
+	pruneTerminalRuns(options?: { retentionDays?: number; runsRetentionDays?: number; days?: number; now?: number; expectedRevision?: number; attempts?: number }): Record<string, unknown>;
+}
+export declare function normalizeRetentionDays(value: unknown, fallback?: number): number | null;
+export declare function runRetentionTimestamp(run: unknown): number | null;
+export declare function pruneRunsDoc(doc: Record<string, unknown>, options?: { retentionDays?: number; runsRetentionDays?: number; days?: number; now?: number }): Record<string, unknown>;
+export declare function deriveLimits(task: Record<string, unknown> | null, overrides?: Record<string, unknown>): {
+	cpuMaxCores: number;
+	memoryMaxBytes: number;
+	tasksMax: number;
+	memoryHighBytes: number | null;
+};

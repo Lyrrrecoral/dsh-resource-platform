@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Hardware Guard",
+    "description": "Host hardware detection, resource guardrails, pressure incidents and sandbox enforcement for DeepSeek Harness."
+  }
+}

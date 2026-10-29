@@ -1,0 +1,6 @@
+# resource-allocation-ui bundle patch.
+# Mounts the Resources client plugin row. The package also declares dsh.client,
+# so the web app loads lib/client.js into the conversation view slot.
+- insert:
+    - id: resource-allocation-ui
+      name: 'resource-allocation-ui'

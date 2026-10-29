@@ -1,0 +1,11 @@
+export declare const EPSILON: number;
+export declare function roundCpu(value: number): number;
+export declare function computeUsage(doc: Record<string, unknown>): Record<string, unknown>;
+export declare function quotaFor(policy: Record<string, unknown>, projectId: string): Record<string, unknown> | null;
+export declare function checkQuota(options: Record<string, unknown>): { ok: boolean; reasons: string[] };
+export declare function computeHeadroom(options: Record<string, unknown>): Record<string, unknown>;
+export declare function effectivePriority(item: Record<string, unknown>, policy: Record<string, unknown>, now?: number): number;
+export declare function orderQueue(items: Array<Record<string, unknown>>, policy: Record<string, unknown>, options?: Record<string, unknown>): Array<Record<string, unknown>>;
+export declare function buildPlan(options: Record<string, unknown>): Record<string, unknown>;
+export declare function runPlan(options: Record<string, unknown>): Record<string, unknown>;
+export declare function renderPlanText(plan: Record<string, unknown>, options?: Record<string, unknown>): string;

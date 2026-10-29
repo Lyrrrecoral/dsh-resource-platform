@@ -1,0 +1,10 @@
+node_modules/
+*.tgz
+*.tmp
+.DS_Store
+.v1-smoke-home/
+.smoke/
+.smoke-home/
+dist/
+
+packages/*/node_modules

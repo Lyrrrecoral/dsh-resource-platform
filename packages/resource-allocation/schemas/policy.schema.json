@@ -1,0 +1,161 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://resource-allocation.local/schemas/policy.schema.json",
+  "title": "ResourceAllocationPolicy",
+  "description": "可移植的资源协调策略。优先级只决定准入/降级顺序，不授权 kill。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "policyId",
+    "scheduling",
+    "admission",
+    "quotas",
+    "pressureActions",
+    "communication"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "policyId": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,63}$"
+    },
+    "scheduling": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "tieBreaker", "preemption", "aging"],
+      "properties": {
+        "algorithm": {
+          "enum": ["static-priority", "weighted-fair-share", "earliest-deadline"]
+        },
+        "tieBreaker": { "enum": ["fifo", "priority-then-fifo"] },
+        "preemption": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["enabled", "graceMs", "checkpointBeforeKill"],
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "graceMs": { "type": "integer", "minimum": 0 },
+            "checkpointBeforeKill": { "type": "boolean" }
+          }
+        },
+        "aging": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["enabled", "boostPerMinute"],
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "boostPerMinute": { "type": "integer", "minimum": 0, "maximum": 100 },
+            "maxWaitMs": { "type": ["integer", "null"], "minimum": 0 }
+          }
+        }
+      }
+    },
+    "admission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "queueLimit",
+        "maxConcurrentAdmitted",
+        "defaultRequest",
+        "headroomReserve",
+        "denyBackgroundAt"
+      ],
+      "properties": {
+        "queueLimit": { "type": "integer", "minimum": 1 },
+        "maxConcurrentAdmitted": { "type": "integer", "minimum": 1 },
+        "defaultRequest": { "$ref": "#/definitions/resource-request" },
+        "headroomReserve": { "$ref": "#/definitions/resource-request" },
+        "denyBackgroundAt": {
+          "enum": ["ok", "warn", "critical"],
+          "description": "通常 warn：warn 即禁止新后台任务，critical 同时拒绝前台重任务。"
+        }
+      }
+    },
+    "quotas": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "projectId",
+          "priority",
+          "cpuMinCores",
+          "cpuMaxCores",
+          "memBudgetBytes",
+          "tasksMax"
+        ],
+        "properties": {
+          "projectId": { "type": "string", "minLength": 1 },
+          "priority": { "type": "integer", "minimum": 0, "maximum": 100 },
+          "cpuMinCores": { "type": "number", "minimum": 0 },
+          "cpuMaxCores": { "type": "number", "exclusiveMinimum": 0 },
+          "memBudgetBytes": { "type": "integer", "minimum": 1 },
+          "tasksMax": { "type": "integer", "minimum": 1 }
+        }
+      }
+    },
+    "pressureActions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ok", "warn", "critical"],
+      "properties": {
+        "ok": { "$ref": "#/definitions/pressure-action" },
+        "warn": { "$ref": "#/definitions/pressure-action" },
+        "critical": { "$ref": "#/definitions/pressure-action" }
+      }
+    },
+    "communication": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["notifyOnTransitions", "injectPolicy"],
+      "properties": {
+        "notifyOnTransitions": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "pressure",
+              "queue-admitted",
+              "queue-denied",
+              "task-throttled",
+              "task-paused",
+              "task-resumed",
+              "task-killed"
+            ]
+          }
+        },
+        "injectPolicy": { "enum": ["transition-only", "periodic"] },
+        "periodicRefreshMs": { "type": "integer", "minimum": 1000 }
+      }
+    }
+  },
+  "definitions": {
+    "resource-request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cpuCores", "memBytes"],
+      "properties": {
+        "cpuCores": { "type": "number", "exclusiveMinimum": 0 },
+        "memBytes": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "pressure-action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allowNewBackground",
+        "throttleElastic",
+        "pausePreemptible"
+      ],
+      "properties": {
+        "allowNewBackground": { "type": "boolean" },
+        "allowNewForeground": { "type": "boolean" },
+        "throttleElastic": { "type": "boolean" },
+        "targetCpuFraction": { "type": "number", "minimum": 0, "maximum": 1 },
+        "pausePreemptible": { "type": "boolean" },
+        "killRunaways": { "type": "boolean" }
+      }
+    }
+  }
+}

@@ -1,0 +1,43 @@
+# hardware-guard bundle patch.
+#
+# Replaces the profile's base sandbox rows with the guarded sandbox provider and
+# mounts the guarded shell, HTTP API and hardware-guard main row. Machine-specific
+# thresholds and cleanup roots belong in the profile's own cordis.patch.yml.
+- id: sandbox
+  disabled: true
+
+- id: bash-sandbox
+  disabled: true
+
+- insert:
+    - id: hardware-guard-sandbox
+      name: 'hardware-guard/sandbox'
+
+    - id: hardware-guard-shell
+      name: 'hardware-guard/shell'
+      disabled: !!js process.platform === 'win32'
+      config:
+        timeoutMs: 60000
+        enabled: true
+        perCommandMemCapBytes: 1610612736
+        maxProcesses: 512
+        niceLevel: 10
+        memoryCapPolicy: none
+
+    - id: hardware-guard-api
+      name: 'hardware-guard/api'
+
+    - id: hardware-guard
+      name: 'hardware-guard'
+      config:
+        enabled: true
+        # The initial host profile is dry-run. Automatic kills are opt-in for
+        # public deployments; enable them only after reviewing the profile.
+        autoKillOnCritical: false
+        memoryCapPolicy: none
+        adaptationEnabled: true
+        injection:
+          turnOneProfile: false
+          periodicReport: false
+          transitionReports: false
+          criticalNotice: false

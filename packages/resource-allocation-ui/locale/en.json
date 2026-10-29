@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Resource Monitor",
+    "description": "Session-centred resource ledger, process lookup and disk cleanup for the DSH web GUI."
+  }
+}

@@ -1,0 +1,113 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://resource-allocation.local/schemas/project-manifest.schema.json",
+  "title": "ProjectManifest",
+  "description": "随项目走：声明项目、任务期望态、运行方式与接管的外部 owner。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "project", "tasks"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]{0,63}$"
+        },
+        "name": { "type": "string", "minLength": 1 },
+        "description": { "type": "string" }
+      }
+    },
+    "adopt": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "mode"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "kind": { "enum": ["systemd-unit", "cgroup", "pidfile"] },
+          "mode": { "enum": ["observe", "managed", "retired"] },
+          "adoptedAt": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "tasks": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/task" }
+    },
+    "metadata": { "type": "object" }
+  },
+  "definitions": {
+    "task": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "enabled", "priority", "run"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._-]{0,127}$"
+        },
+        "kind": {
+          "enum": ["service", "compute-batch", "agent", "manual"]
+        },
+        "enabled": { "type": "boolean" },
+        "priority": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "preemptible": { "type": "boolean" },
+        "checkpoint": { "type": "boolean" },
+        "deadlineMs": { "type": ["integer", "null"], "minimum": 0 },
+        "request": { "$ref": "#/definitions/resource-request" },
+        "limits": { "$ref": "#/definitions/resource-limits" },
+        "run": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["source"],
+          "properties": {
+            "source": { "enum": ["systemd", "script", "manual"] },
+            "systemdUnit": { "type": "string" },
+            "workingDirectory": { "type": "string" },
+            "command": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "env": {
+              "type": "object",
+              "additionalProperties": { "type": "string" }
+            },
+            "checkpointPath": { "type": "string" },
+            "logPath": { "type": "string" },
+            "restart": {
+              "enum": ["checkpoint", "restart", "once", "manual"]
+            },
+            "maxRestartsPerHour": { "type": "integer", "minimum": 0 },
+            "graceSeconds": { "type": "integer", "minimum": 0 }
+          }
+        }
+      }
+    },
+    "resource-request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cpuCores", "memBytes"],
+      "properties": {
+        "cpuCores": { "type": "number", "exclusiveMinimum": 0 },
+        "memBytes": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "resource-limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cpuMaxCores", "memoryMaxBytes", "tasksMax"],
+      "properties": {
+        "cpuMinCores": { "type": "number", "minimum": 0 },
+        "cpuMaxCores": { "type": "number", "exclusiveMinimum": 0 },
+        "memoryHighBytes": { "type": "integer", "minimum": 1 },
+        "memoryMaxBytes": { "type": "integer", "minimum": 1 },
+        "tasksMax": { "type": "integer", "minimum": 1 }
+      }
+    }
+  }
+}
