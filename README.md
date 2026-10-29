@@ -38,6 +38,10 @@ overlapping cleanup needs, but not host pressure guarding or managed runs.
 `xychendave/dsh-hardware-guard` is a physical-hardware/robotics safety tool, not
 a host resource guard. See [PRIOR-ART.md](PRIOR-ART.md) for the full review.
 
+LayerFS × DSH is a complementary workspace/history substrate (FUSE Branches,
+Commits, Sandboxes), not a host resource guard; see
+[PRIOR-ART.md](PRIOR-ART.md#complementary-infrastructure-layerfs--dsh).
+
 The closest UI neighbours are dashboards; this project is intentionally a
 **resource ledger**, not a project registry. Project/task IDs are optional
 labels, not a registration prerequisite.

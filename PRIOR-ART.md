@@ -63,3 +63,25 @@ Ship all three packages as separate bundles in one repository. Keep the names
 for this release to avoid breaking existing DSH profiles; document the domain
 clearly. If the project gains adoption, consider a scoped or `dsh-` prefixed
 namespace in a major release.
+
+## Complementary infrastructure: LayerFS × DSH
+
+[`Ephemeral-AI-Lab/dsh-layerfs`](https://github.com/Ephemeral-AI-Lab/dsh-layerfs)
+(and its LayerFS substrate) is a workspace/history layer, not a host resource
+manager. It gives each agent a writable FUSE Workspace over a content-addressed
+Store, with Branches, Commits, recursive checkpoints, Sandboxes, merge/publish
+and a Work/History UI.
+
+It does **not** cover this project's core:
+
+- host hardware profiles, budgets, pressure/watchdog and runaway handling;
+- guarded shell limits (`nice`/`prlimit`/process caps);
+- systemd transient long-task lifecycle, exact stop and queue ownership;
+- host process lookup, orphan attribution and disk cleanup/trash management.
+
+The overlap is at the edges: LayerFS Sandboxes isolate workspace execution,
+while hardware-guard limits host resources; LayerFS deduplication reduces
+storage, while this project's cleanup card reclaims legacy output files. They
+are complementary. If both are installed, do not point cleanup roots at the
+LayerFS content store, and use `resource_run` for long LayerFS build/export
+jobs so they remain visible and exactly stoppable.
