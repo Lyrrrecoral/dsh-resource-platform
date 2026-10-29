@@ -13,9 +13,9 @@
 - [x] Session-only queue enqueue verified from installed tarball
 - [x] Privacy audit of tracked files and tarballs: PASS
 - [x] Host tests run in the private development checkout (223 hardware / 236 resource)
-- [ ] GitHub repository created and pushed (blocked: no valid GitHub credential)
-- [ ] `dsh-plugin` topic added (requires repository)
-- [ ] GitHub Release with tarballs created (requires repository)
-- [ ] Repository URL added to package metadata (requires repository)
+- [x] GitHub repository created and pushed: https://github.com/Lyrrrecoral/dsh-resource-platform
+- [ ] `dsh-plugin` topic added (manual; GITHUB_TOKEN cannot set repository topics)
+- [x] GitHub Release with tarballs created: https://github.com/Lyrrrecoral/dsh-resource-platform/releases/tag/v1.0.0
+- [x] Repository URL added to package metadata
 
 The last four items require GitHub credentials/repository ownership.

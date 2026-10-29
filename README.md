@@ -127,5 +127,5 @@ MIT. See [LICENSE](LICENSE).
 
 ## GitHub discovery
 
-Add the `dsh-plugin` topic to the repository. See the official
+The public repository is https://github.com/Lyrrrecoral/dsh-resource-platform and the first release is https://github.com/Lyrrrecoral/dsh-resource-platform/releases/tag/v1.0.0. Add the `dsh-plugin` topic on the repository About panel for discoverability. See the official
 [packaging and install guide](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/publish.md).
