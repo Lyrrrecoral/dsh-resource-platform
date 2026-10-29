@@ -11,5 +11,10 @@
     "test:ui": "node packages/resource-allocation-ui/smoke/bundle-smoke.mjs",
     "check": "node scripts/check-release.mjs",
     "audit:privacy": "node scripts/privacy-audit.mjs"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Lyrrrecoral/dsh-resource-platform.git"
+  },
+  "homepage": "https://github.com/Lyrrrecoral/dsh-resource-platform#readme"
 }

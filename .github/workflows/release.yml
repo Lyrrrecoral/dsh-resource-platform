@@ -1,0 +1,41 @@
+name: release
+on:
+  push:
+    tags:
+      - 'v*'
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Pack bundles and checksums
+        run: |
+          mkdir -p release-assets
+          for package in packages/*; do
+            (cd "$package" && npm pack --pack-destination "$GITHUB_WORKSPACE/release-assets")
+          done
+          cd release-assets
+          sha256sum *.tgz > SHA256SUMS
+          cat SHA256SUMS
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" \
+            release-assets/*.tgz release-assets/SHA256SUMS \
+            --title "DSH Resource Platform ${GITHUB_REF_NAME}" \
+            --notes-file RELEASE-NOTES.md
+      - name: Add repository topics
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api --method PUT "repos/${GITHUB_REPOSITORY}/topics" \
+            -f 'names[]=dsh-plugin' \
+            -f 'names[]=deepseek-harness' \
+            -f 'names[]=resource-monitor'

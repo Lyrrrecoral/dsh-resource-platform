@@ -17,16 +17,16 @@ ssh -T git@github.com
 Then create the repository and push:
 
 ```sh
-gh repo create <owner>/dsh-resource-platform --public --source=. --remote=origin --push
+gh repo create Lyrrrecoral/dsh-resource-platform --public --source=. --remote=origin --push
 # or, with an existing empty repo:
-git remote add origin git@github.com:<owner>/dsh-resource-platform.git
+git remote add origin git@github.com:Lyrrrecoral/dsh-resource-platform.git
 git push -u origin main
 ```
 
 ## 2. Discoverability
 
 ```sh
-gh repo edit <owner>/dsh-resource-platform \
+gh repo edit Lyrrrecoral/dsh-resource-platform \
   --add-topic dsh-plugin \
   --add-topic deepseek-harness \
   --add-topic resource-monitor

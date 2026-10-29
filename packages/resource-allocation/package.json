@@ -87,5 +87,14 @@
     "systemd",
     "queue",
     "session-monitor"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Lyrrrecoral/dsh-resource-platform.git",
+    "directory": "packages/resource-allocation"
+  },
+  "homepage": "https://github.com/Lyrrrecoral/dsh-resource-platform#readme",
+  "bugs": {
+    "url": "https://github.com/Lyrrrecoral/dsh-resource-platform/issues"
+  }
 }

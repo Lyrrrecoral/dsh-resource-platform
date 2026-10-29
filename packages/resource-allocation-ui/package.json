@@ -56,5 +56,14 @@
     "dsh-client",
     "resource-monitor",
     "disk-cleanup"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Lyrrrecoral/dsh-resource-platform.git",
+    "directory": "packages/resource-allocation-ui"
+  },
+  "homepage": "https://github.com/Lyrrrecoral/dsh-resource-platform#readme",
+  "bugs": {
+    "url": "https://github.com/Lyrrrecoral/dsh-resource-platform/issues"
+  }
 }

@@ -79,7 +79,7 @@ is required.
 Once the repository is published:
 
 ```sh
-dsh plugin --profile web add github:<owner>/<repo>#<commit>
+dsh plugin --profile web add github:Lyrrrecoral/dsh-resource-platform#<commit>
 ```
 
 For a monorepo, use the package directory path in the plugin index or install
