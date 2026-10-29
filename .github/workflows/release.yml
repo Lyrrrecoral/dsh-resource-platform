@@ -35,7 +35,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh api --method PUT "repos/${GITHUB_REPOSITORY}/topics" \
-            -f 'names[]=dsh-plugin' \
-            -f 'names[]=deepseek-harness' \
-            -f 'names[]=resource-monitor'
+          cat > /tmp/topics.json <<'JSON'
+          {"names":["dsh-plugin","deepseek-harness","resource-monitor"]}
+          JSON
+          gh api --method PUT "repos/${GITHUB_REPOSITORY}/topics" --input /tmp/topics.json
